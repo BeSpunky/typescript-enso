@@ -48,3 +48,21 @@ export function isTypeVariable(node: tsMorph.Node): boolean
 {
     return hasTypeFlags(node, tsMorph.TypeFlags.TypeVariable);
 }
+
+export function describeNodeIfGeneric(node: tsMorph.Node): string | undefined
+{
+    if (!isIdentifierNode(node)) return;
+
+    const tryKindAndPrint = (kind: tsMorph.ts.SyntaxKind, exclude = (parent: tsMorph.Node) => false) =>
+    {
+        const parent = node.getParentIfKind(kind);
+
+        return parent && !exclude(parent) ? `${node.getText()}${printGenericArgs(node) ?? ''}` : void 0;
+    };
+    
+    return tryKindAndPrint(ts.SyntaxKind.TypeAliasDeclaration)
+        ?? tryKindAndPrint(ts.SyntaxKind.TypeReference, isTypeVariable)
+        ?? tryKindAndPrint(ts.SyntaxKind.InterfaceDeclaration)
+        ?? tryKindAndPrint(ts.SyntaxKind.ClassDeclaration)
+        ?? tryKindAndPrint(ts.SyntaxKind.ExpressionWithTypeArguments);
+}

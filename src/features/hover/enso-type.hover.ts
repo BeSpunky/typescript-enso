@@ -1,8 +1,7 @@
 import * as vscode from 'vscode';
 import * as tsMorph from 'ts-morph';
-import { createActionLink } from '../../utils/commands';
 import { Registerer } from '../../types/registerer';
-import { printGenericArgs, findNodeAtPosition, isIdentifierNode, isTypeVariable } from '../../utils/typescript';
+import { findNodeAtPosition, describeNodeIfGeneric } from '../../utils/typescript';
 
 const { ts } = tsMorph;
 
@@ -16,29 +15,11 @@ export class TypeAliasHoverProvider implements vscode.HoverProvider
         
         if (!hoveredNode) return;
 
-        const typeDescription = this.describeNodeIfRelevant(hoveredNode);
+        const typeDescription = describeNodeIfGeneric(hoveredNode);
 
         if (!typeDescription) return;
         
         return new vscode.Hover([this.createMarkdown(document.fileName, position, typeDescription)]);
-    }
-
-    private describeNodeIfRelevant(node: tsMorph.Node): string | undefined
-    {
-        if (!isIdentifierNode(node)) return;
-
-        const tryKindAndPrint = (kind: tsMorph.ts.SyntaxKind, exclude = (parent: tsMorph.Node) => false) =>
-        {
-            const parent = node.getParentIfKind(kind);
-
-            return parent && !exclude(parent) ? `${node.getText()}${printGenericArgs(node) ?? ''}` : void 0;
-        };
-        
-        return tryKindAndPrint(ts.SyntaxKind.TypeAliasDeclaration)
-            ?? tryKindAndPrint(ts.SyntaxKind.TypeReference, isTypeVariable)
-            ?? tryKindAndPrint(ts.SyntaxKind.InterfaceDeclaration)
-            ?? tryKindAndPrint(ts.SyntaxKind.ClassDeclaration)
-            ?? tryKindAndPrint(ts.SyntaxKind.ExpressionWithTypeArguments);
     }
 
     private createMarkdown(filePath: string, { line, character }: vscode.Position, typeDescription: string): vscode.MarkdownString
@@ -60,4 +41,3 @@ export class TypeAliasHoverProvider implements vscode.HoverProvider
 
 export const registerEnsoTypeHover: Registerer = (context) =>
     vscode.languages.registerHoverProvider('typescript', new TypeAliasHoverProvider(context));
-
