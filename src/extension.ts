@@ -1,12 +1,17 @@
 import * as vscode from 'vscode';
-import TypeAliasHoverProvider from './type-hover.provider';
-import createEnsoDebugTypeCommand from './debug-type.command';
+import { Registerer } from './types/registerer';
+import { registerEnsoTypeHover } from './features/hover/enso-type.hover';
+import { registerEnsoDebugCommand } from './features/debug/enso-debug.command';
 
-export function activate(context: vscode.ExtensionContext) {
+export function activate(context: vscode.ExtensionContext)
+{
+    const providerRegisterers: Registerer[] = [
+        registerEnsoTypeHover,
+        registerEnsoDebugCommand
+    ];
+
     context.subscriptions.push(
-        vscode.languages.registerHoverProvider('typescript', new TypeAliasHoverProvider(context)),
-
-        vscode.commands.registerCommand('enso.debug', createEnsoDebugTypeCommand(context))
+        ...providerRegisterers.map(register => register(context))
     );
 }
 
