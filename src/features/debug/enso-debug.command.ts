@@ -3,13 +3,14 @@ import { Registerer } from '../../types/registerer';
 import { describeNodeIfGeneric, findNodeAtPosition } from '../../utils/typescript';
 import { createCommandUri } from '../../utils/commands';
 import { showNodeNotFoundMessage, showNodeNotDebuggableMessage } from './enso-debug.ui-utils';
+import { EnsoDebugRawSchema, encodeUriParams } from './enso-debug-raw.document';
 
 export const EnsoDebugCommandName = 'enso.debug';
 
 export type EnsoDebugCommandOrigin = 'palette' | 'hover' | 'external';
 
-export default function ensoDebugTypeCommand(context: vscode.ExtensionContext)
-{    
+export function ensoDebugTypeCommand(context: vscode.ExtensionContext)
+{
     function attemptToProduceValidArgs(sourceFilePath?: string, line?: number, character?: number): { path: string; position: vscode.Position; }
     {
         if (sourceFilePath && line !== undefined && character !== undefined)
@@ -48,7 +49,10 @@ export default function ensoDebugTypeCommand(context: vscode.ExtensionContext)
         const genericDescription = describeNodeIfGeneric(nodeAtPosition);
 
         if (genericDescription)
+        {
+            launchRawView(path, position);
             vscode.window.showInformationMessage(`[Enso] Debugging type '${ genericDescription }'`);
+        }
         else
             showNodeNotDebuggableMessage(origin);
     };
@@ -61,3 +65,13 @@ export function createEnsoDebugCommandUri(...args: Parameters<ReturnType<typeof 
 {
     return createCommandUri(EnsoDebugCommandName, ...args);
 }
+
+async function launchRawView(path: string, position: vscode.Position)
+{
+    const newRawEnsoDocumentUri = vscode.Uri.parse(`${ EnsoDebugRawSchema }:Enso Raw Spread.ts?${ encodeUriParams(path, position) }`);
+
+    const document = await vscode.workspace.openTextDocument(newRawEnsoDocumentUri);
+    
+    vscode.window.showTextDocument(document, { preview: false });
+}
+
