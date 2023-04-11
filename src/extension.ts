@@ -1,9 +1,9 @@
-import * as vscode from 'vscode';
+import { ExtensionContext } from 'vscode';
 import { Registerer } from './types/registerer';
 import { registerEnsoTypeHover } from './features/hover/enso-type.hover';
 import { registerEnsoDebugCommand } from './features/debug/enso-debug.command';
 
-export function activate(context: vscode.ExtensionContext)
+export function activate(context: ExtensionContext)
 {
     const providerRegisterers: Registerer[] = [
         registerEnsoTypeHover,
