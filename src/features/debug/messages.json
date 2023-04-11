@@ -1,0 +1,12 @@
+{
+  "nodeNotFound": {
+    "hover": "The node you hovered on isn't a debuggable type. Did the code change while the command was launching?",
+    "palette": "The selected node isn't a debuggable type. Put your carret on some type and rerun the command.",
+    "external": "No debuggable type was found at the specified position. Did the code change while the link stayed the same?"
+  },
+  "nodeNotDebuggable": {
+    "hover": "Failed to find the node you hovered on. Did the code change while the command was launching?",
+    "palette": "No type detected. Put your carret on some type and rerun the command.",
+    "external": "Failed to load type debugging. No type was found at the specified position. Did the code change while the link stayed the same?"
+  }
+}
