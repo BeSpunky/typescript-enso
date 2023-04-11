@@ -1,11 +1,8 @@
 import { MarkdownString, Uri, } from 'vscode';
 
-export function createActionLink(text: string, commandName: string, args?: unknown): MarkdownString
+export function createActionLink<Args extends unknown[]>(text: string, commandName: string, args?: Args): MarkdownString
 {
-    const commandUri = Uri.parse(
-        `command:${ commandName }?${ encodeURIComponent(JSON.stringify(args)) }`
-    );
-
+    const commandUri = createCommandUri(commandName, ...args);
     const markdown = new MarkdownString(`[${ text }](${ commandUri })`);
     
     markdown.isTrusted = true;
