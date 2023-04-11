@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import * as Messages  from './messages.json';
+import * as Messages from './messages.json';
 import { EnsoDebugCommandOrigin } from './enso-debug.command';
 
 export function showNodeNotDebuggableMessage(origin: EnsoDebugCommandOrigin)

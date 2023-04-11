@@ -5,6 +5,7 @@ import { createCommandUri } from '../../utils/commands';
 import { showNodeNotFoundMessage, showNodeNotDebuggableMessage } from './enso-debug.ui-utils';
 
 export const EnsoDebugCommandName = 'enso.debug';
+
 export type EnsoDebugCommandOrigin = 'palette' | 'hover' | 'external';
 
 export default function ensoDebugTypeCommand(context: vscode.ExtensionContext)
