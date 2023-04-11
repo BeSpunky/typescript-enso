@@ -1,4 +1,4 @@
-import { ExtensionContext, MarkdownString, Uri, } from 'vscode';
+import { MarkdownString, Uri, } from 'vscode';
 
 export function createActionLink(text: string, commandName: string, args?: unknown): MarkdownString
 {
@@ -12,4 +12,9 @@ export function createActionLink(text: string, commandName: string, args?: unkno
     markdown.supportThemeIcons = true;
 
     return markdown;
+}
+
+export function createCommandUri<Args extends unknown[]>(commandName: string, ...args: Args): Uri
+{
+    return Uri.parse(`command:${commandName}?${ encodeURIComponent(JSON.stringify(args)) }`, true);
 }

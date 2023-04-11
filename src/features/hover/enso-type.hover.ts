@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 import * as tsMorph from 'ts-morph';
 import { Registerer } from '../../types/registerer';
 import { findNodeAtPosition, describeNodeIfGeneric } from '../../utils/typescript';
+import { createEnsoDebugCommandUri } from '../debug/enso-debug.command';
 
 const { ts } = tsMorph;
 
@@ -30,10 +31,11 @@ export class TypeAliasHoverProvider implements vscode.HoverProvider
         markdown.supportHtml = true;
 
         const logoUri = vscode.Uri.file(this.context.extensionPath.concat('/assets/logo/wide.png'));
-
+        const debugCommandUri = createEnsoDebugCommandUri(filePath, line, character);
+        
         markdown.appendMarkdown(`![TS Enso](${logoUri})`);
         markdown.appendCodeblock(typeDescription, 'typescript');
-        markdown.appendMarkdown(`[Debug with Enso](command:enso.debug?file=${filePath}&line=${line}&char=${character})`);
+        markdown.appendMarkdown(`[Debug with Enso](${debugCommandUri})`);
 
         return markdown;
     }
