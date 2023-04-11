@@ -10,7 +10,8 @@
     "Other"
   ],
   "activationEvents": [
-    "onLanguage:typescript"
+    "onLanguage:typescript",
+    "onCommand:enso.debug"
   ],
   "main": "./dist/extension.js",
   "contributes": {
@@ -19,7 +20,15 @@
         "command": "enso.debug",
         "title": "Enso: Debug Type"
       }
-    ]
+    ],
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "enso.debug",
+          "when": "editorLangId === 'typescript'"
+        }
+      ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "pnpm run package",
